@@ -297,7 +297,12 @@ SYS_INC_DIRS 			+= $(RAYLIB_SRC_DIR)
 # LBL_IncludeFlags
 ### Make include flags by prefixing every provided path
 INC_FLAGS 				= $(addprefix -I,$(INC_DIRS))
+
+ifeq ($(PLATFORM),windows)
+INC_FLAGS 				+= $(addprefix -I,$(SYS_INC_DIRS))
+else
 INC_FLAGS 				+= $(addprefix -isystem,$(SYS_INC_DIRS))
+endif
 
 
 #######################################
@@ -549,7 +554,7 @@ $(BUILD_DIR_ROOT)/unix/debug/%$(OBJ_EXT) : %$(SRC_EXT)
 $(BIN_DIR_ROOT)/$(PLATFORM)/$(BUILD)/$(BIN)$(BIN_EXT) : $(OBJS)
 	$(info )
 	$(info === Link: PLATFORM=$(PLATFORM), BUILD=$(BUILD) ===)
-	$(CXX) -o $@ $^ $(CXX_FLAGS) $(LIB_FLAGS) $(LD_FLAGS)
+	$(CXX) -o $@ $^ $(CXX_FLAGS) $(INC_FLAGS) $(LIB_FLAGS) $(LD_FLAGS)
 
 
 ### "-" surpresses error for initial missing .d files
